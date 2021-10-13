@@ -51,6 +51,14 @@ const sphereBody = new CANNON.Body({
 
 world.addBody(sphereBody);
 
+// Floor
+const floorShape = new CANNON.Plane();
+const floorBody = new CANNON.Body();
+floorBody.mass = 0;
+floorBody.addShape(floorShape);
+floorBody.quaternion.setFromAxisAngle(new CANNON.Vec3(-1, 0, 1), Math.PI * 0.5);
+world.addBody(floorBody);
+
 /**
  * Test sphere
  */
@@ -153,11 +161,17 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
  * Animate
  */
 const clock = new THREE.Clock();
+let oldElapsedTime = 0;
 
 const tick = () => {
   const elapsedTime = clock.getElapsedTime();
+  const deltaTime = elapsedTime - oldElapsedTime;
+  oldElapsedTime = elapsedTime;
 
-  //
+  // Update physics World
+  world.step(1 / 60, elapsedTime, 3);
+
+  sphere.position.copy(sphereBody.position);
 
   // Update controls
   controls.update();
