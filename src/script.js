@@ -8,6 +8,17 @@ import CANNON from 'cannon';
  * Debug
  */
 const gui = new dat.GUI();
+const debugObject = {};
+
+debugObject.createSphere = () => {
+  createSphere(Math.random() * 0.5, {
+    x: (Math.random() - 0.5) * 3,
+    y: 3,
+    z: (Math.random() - 0.5) * 3,
+  });
+};
+
+gui.add(debugObject, 'createSphere');
 
 /**
  * Base
@@ -205,6 +216,10 @@ const tick = () => {
 
   // Update physics World
   world.step(1 / 60, elapsedTime, 2);
+
+  for (const object of objectsToUpdate) {
+    object.mesh.position.copy(object.body.position);
+  }
 
   // Update controls
   controls.update();
